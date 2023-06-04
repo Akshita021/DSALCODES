@@ -1,0 +1,123 @@
+/* use height balance tree to store dictionary keys*/
+#include <iostream>
+#include <cstring>
+
+class Tree {
+private:
+    struct Node {
+        char key[10];
+        char meaning[10];
+        Node* left;
+        Node* right;
+    };
+    Node* root;
+
+public:
+    Tree() : root(nullptr) {}
+    void create();
+    void inorderRec(Node* root);
+    void postorderRec(Node* root);
+    void inorder();
+    void postorder();
+};
+
+void Tree::create() {
+    Node* newNode = new Node;
+    newNode->left = newNode->right = nullptr;
+
+    std::cout << "\n\tEnter the Keyword: ";
+    std::cin >> newNode->key;
+    std::cout << "\n\tEnter the Meaning of " << newNode->key << ": ";
+    std::cin >> newNode->meaning;
+
+    if (root == nullptr)
+        root = newNode;
+    else {
+        Node* current = root;
+        Node* parent = nullptr;
+
+        while (current != nullptr) {
+            parent = current;
+            if (strcmp(newNode->key, current->key) < 0)
+                current = current->left;
+            else
+                current = current->right;
+        }
+
+        if (strcmp(newNode->key, parent->key) < 0)
+            parent->left = newNode;
+        else
+            parent->right = newNode;
+    }
+}
+
+void Tree::inorderRec(Node* root) {
+    if (root != nullptr) {
+        inorderRec(root->left);
+        std::cout << "\n\t" << root->key << "\t" << root->meaning;
+        inorderRec(root->right);
+    }
+}
+
+void Tree::postorderRec(Node* root) {
+    if (root != nullptr) {
+        postorderRec(root->right);
+        std::cout << "\n\t" << root->key << "\t" << root->meaning;
+        postorderRec(root->left);
+    }
+}
+
+void Tree::inorder() {
+    inorderRec(root);
+}
+
+void Tree::postorder() {
+    postorderRec(root);
+}
+
+int main() {
+    Tree tr;
+    int ch;
+    char ans;
+
+    do {
+        std::cout << "\n\t***** BST Operations *****";
+        std::cout << "\n\t1. Create\n\t2. Display\n\t3. Exit";
+        std::cout << "\n\t.....Enter Your Choice: ";
+        std::cin >> ch;
+
+        switch (ch) {
+            case 1:
+                do {
+                    tr.create();
+                    std::cout << "......Do You Want To Continue: ";
+                    std::cin >> ans;
+                } while (ans == 'y' || ans == 'Y');
+                break;
+
+            case 2:
+                std::cout << "\n\t\t1. Ascending\n\t\t2. Descending\n\t\t.....Enter Your Choice: ";
+                std::cin >> ch;
+                std::cout << "\n\tKeyword\tMeaning";
+
+                switch (ch) {
+                    case 1:
+                        tr.inorder();
+                        break;
+
+                    case 2:
+                        tr.postorder();
+                        break;
+                }
+                break;
+
+            case 3:
+                break;
+        }
+
+        std::cout << "\n\t\t..... Do You Want to Continue: ";
+        std::cin >> ans;
+    } while (ans == 'y' || ans == 'Y');
+
+    return 0;
+}
